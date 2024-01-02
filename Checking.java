@@ -13,7 +13,7 @@ public class Checking extends BankAccount {
         super(number, owner, balance);
     }
 
-    @override
+    @Override
     public String toString() {
         return "Checking\t" + super.toString();
     }

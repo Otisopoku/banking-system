@@ -1,6 +1,7 @@
 
 /**This class manages the BankAccounts and enable the user make several banking operations */
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 // question: how do I make the format print 3.00 instead of 3.0
@@ -112,6 +113,7 @@ public class BankManager {
                                             break;
                                         case 5:
                                             loop = false;
+
                                     }
                                 }
 
@@ -128,16 +130,30 @@ public class BankManager {
                     break;
 
                 case 3:
-                    /** Sort accounts by virtue of account numbers -- ascending order */
-                    bank.sortAccounts(true);
+                    /**
+                     * Sort accounts by virtue of account balance --
+                     * 
+                     */
+                    bank.sortAccounts(new ComparatorByBalance());
+                    
                     break;
                 case 4:
-                    /** Sorts accounts by virtue of account balance -- ascending order */
-                    bank.sortAccounts(false);
+                    /** sort accounts by virtue of account owner */
+                    bank.sortAccounts(new ComparatorByOwner());
                     break;
                 case 5:
+                    /** Sorts accounts by virtue of account number */
+                    bank.sortAccounts(new ComparatorByNumber());
+                    break;
+                case 6:
                     /* Writes the bank accounts into a file */
                     bank.saveAccount("accounts.txt");
+                    if (bank.isCloseable()) {
+                        System.out.printf("Total funds = $%.2f%n", bank.getTotalFunds());
+                        System.out.println("Number of customers = " + bank.getBankAccounts().size());
+                        System.out.println("This bank is closeable");
+
+                    }
                     System.exit(0);
 
             }
@@ -169,9 +185,10 @@ public class BankManager {
         System.out.println("Select an operation: ");
         System.out.println("1: View accounts");
         System.out.println("2: Manage Account");
-        System.out.println("3: Sort accounts by number");
-        System.out.println("4: Sort accounts by balance");
-        System.out.println("5: Exit");
+        System.out.println("3: Sort accounts by balance");
+        System.out.println("4: Sort account by owner");
+        System.out.println("5: Sort account by number");
+        System.out.println("6: Exit");
     }
 
     /**
@@ -186,7 +203,7 @@ public class BankManager {
             if (input.hasNextInt()) {
                 int option = input.nextInt();
                 if (option != 1 && option != 2 && option != 3
-                        && option != 4 && option != 5) {
+                        && option != 4 && option != 5 && option != 6) {
                     System.out.println("Enter a valid choice: ");
                     input.nextLine();
                 } else {
@@ -209,9 +226,27 @@ public class BankManager {
      */
     private static void printBankAccounts(Bank bank) {
         System.out.println("Type \t\t Number \tOwner \t\t\t\tBalance \tInterest/Type");
-        for (int i = 0; i < bank.getCount(); i++) {
-            System.out.println(bank.getBankAccounts()[i]);
+        for (int i = 0; i < bank.getBankAccounts().size(); i++) {
+            System.out.println(bank.getBankAccounts().get(i));
         }
+    }
+
+    /**
+     * Prints all closeable bank accounts
+     * 
+     * @param bank
+     */
+    private static void printCloseableAccounts(Bank bank) {
+        ArrayList<BankAccount> closeableAccounts = bank.getClosableAccounts();
+        if (closeableAccounts.size() < 1) {
+            System.out.println("There are no closable accounts ");
+        } else {
+            System.out.println("There are " + closeableAccounts.size() + " closeable accounts");
+            for (BankAccount accounts : closeableAccounts) {
+                System.out.println(accounts);
+            }
+        }
+
     }
 
     /**
