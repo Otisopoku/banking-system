@@ -3,7 +3,7 @@
  * Investment.java)
  */
 
-public abstract class BankAccount {
+public abstract class BankAccount implements Comparable<BankAccount>, Closeable {
 
     /** Data fields */
     private long number;
@@ -80,6 +80,16 @@ public abstract class BankAccount {
         }
         this.balance = this.balance - amount;
         return true;
+    }
+
+    @Override
+    public int compareTo(BankAccount ba) {
+        return (getBalance() == ba.getBalance()) ? 0 : (getBalance() > ba.getBalance()) ? 1 : -1;
+    }
+
+    @Override
+    public boolean isCloseable() {
+        return getBalance() < 200.00;
     }
 
     /**
